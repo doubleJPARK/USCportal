@@ -11,30 +11,33 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-import os, json
+import os
+
+# json file을 읽기 위해 json module을 import 합니다.
+import json  
+
+# Error 발생시 처리하기 위해 import 합니다.
 from django.core.exceptions import ImproperlyConfigured
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 기존에 있던 BASE_DIR입니다. 아래 secret_file을 불러올 때
+# 사용하기 때문에 BASE_DIR을 먼저 설정해줍니다.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
+# 만들어두었던 json 파일을 불러옵니다.
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
 
+# json 파일을 읽어 secret에 할당합니다.
 with open(secret_file) as f:
-    secrets = json.loads(f.read())
+	secrets = json.loads(f.read())
 
+# json 파일에 key를 확인하고 key가 없으면 KeyError를 출력합니다.
 def get_secret(setting, secrets=secrets):
     try:
         return secrets[setting]
     except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
+        error_msg = "Set the {0} enviroment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
-
+ 
 SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -52,7 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
     'document',
     'dog',
 ]
@@ -123,11 +125,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'GMT + 9'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
